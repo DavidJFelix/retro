@@ -11,8 +11,7 @@ config :retro, Retro.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
-  watchers: [node: ["node_modules/brunch/bin/brunch", "watch", "--stdin",
-                    cd: Path.expand("../", __DIR__)]]
+  watchers: []
 
 
 # Watch static and templates for browser reloading.
@@ -39,5 +38,5 @@ config :retro, Retro.Repo,
   username: "postgres",
   password: "postgres",
   database: "retro_dev",
-  hostname: "localhost",
+  hostname: "db",
   pool_size: 10
