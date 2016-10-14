@@ -12,7 +12,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: .dev.dockerfile
       args:
         - http_proxy
         - https_proxy

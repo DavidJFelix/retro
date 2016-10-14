@@ -20,8 +20,11 @@ config :retro, Retro.Endpoint,
     patterns: [
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
       ~r{priv/gettext/.*(po)$},
-      ~r{web/views/.*(ex)$},
-      ~r{web/templates/.*(eex)$}
+      ~r{web/.*(ex)$},
+      ~r{web/channels/.*(ex)$},
+      ~r{web/controllers/.*(ex)$},
+      ~r{web/templates/.*(eex)$},
+      ~r{web/views/.*(ex)$}
     ]
   ]
 
