@@ -19,8 +19,7 @@ defmodule Retro.Router do
     get "/", PageController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", Retro do
-  #   pipe_through :api
-  # end
+  scope "/v1", Retro do
+     pipe_through :api
+  end
 end
