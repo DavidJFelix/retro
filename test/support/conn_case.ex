@@ -24,6 +24,7 @@ defmodule Retro.ConnCase do
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
+      import Retro.TestHelpers
 
       import Retro.Router.Helpers
 

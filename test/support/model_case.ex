@@ -22,6 +22,7 @@ defmodule Retro.ModelCase do
       import Ecto.Changeset
       import Ecto.Query
       import Retro.ModelCase
+      import Retro.TestHelpers
     end
   end
 
