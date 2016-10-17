@@ -12,8 +12,11 @@ RUN apt-get -yq update && \
 
 # Get deps
 COPY mix.exs /opt/
-RUN yes | mix deps.get
 
-ONBUILD RUN mix local.rebar && mix compile --long-compilation-threshold 40
+RUN mix local.hex --force
+
+ONBUILD RUN yes | mix deps.get \
+	&& mix local.rebar \
+	&& mix compile --long-compilation-threshold 40
 
 ENTRYPOINT ["mix", "phoenix.server"]
