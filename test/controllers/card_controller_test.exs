@@ -23,12 +23,9 @@ defmodule Retro.CardControllerTest do
       # Repo.insert returns objects with metadata and atoms for keys.
       # We need no metadata and strings for keys, so we map our conversion
       # to get our expected Map
-      expected = Enum.map(cards, &Repo.insert!(&1))
-      |> Enum.map(&Map.take(&1, [:id, :title]))
-      |> Enum.map(&Enum.reduce(&1, %{},
-        fn ({key, val}, acc) ->
-          Map.put(acc, Atom.to_string(key), val)
-        end))
+      expected = cards
+                 |> Enum.map(&Repo.insert!(&1))
+                 |> Enum.map(&stringify_keys/1)
 
       response = conn
       |> get(card_path(conn, :index))
@@ -44,13 +41,9 @@ defmodule Retro.CardControllerTest do
       # Repo.insert returns objects with metadata and atoms for keys.
       # We need no metadata and strings for keys, so we map our conversion
       # to get our expected Map
-      expected = [card
-      |> Repo.insert!
-      |> Map.take([:id, :title])
-      |> Enum.reduce(%{},
-        fn ({key, val}, acc) ->
-          Map.put(acc, Atom.to_string(key), val)
-        end)]
+      expected = card
+                 |> Repo.insert!
+                 |> stringify_keys
 
       response = conn
       |> get(card_path(conn, :index))
