@@ -21,5 +21,7 @@ defmodule Retro.Router do
 
   scope "/v1", Retro do
      pipe_through :api
+
+     resources "/cards", CardController
   end
 end

@@ -2,7 +2,7 @@ defmodule Retro.CardView do
   use Retro.Web, :view
 
   # Explicitly declare the exposed JSON fields to prevent implicit vulns
-  def render("card.json", card) do
+  def render("card.json", %{card: card}) do
     %{
       id: card.id,
       title: card.title
@@ -14,6 +14,6 @@ defmodule Retro.CardView do
   end
 
   def render("show.json", %{card: card}) do
-    render(Retro.CardView, "card.json", card)
+    render(Retro.CardView, "card.json", card: card)
   end
 end

@@ -3,6 +3,7 @@ defmodule Retro.Card do
 
   @primary_key {:id, Ecto.UUID, autogenerate: true}
 
+  @derive {Poison.Encoder, only: [:id, :title]}
   schema "cards" do
     field :title, :string
 
