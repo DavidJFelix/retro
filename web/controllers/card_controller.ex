@@ -3,24 +3,35 @@ defmodule Retro.CardController do
 
   alias Retro.Card
   alias Ecto.UUID
+  alias Retro.CardView
 
   def index(conn, _params) do
-    # TODO 1: implement the index controller
-    # HINT: Repo.all(Model) will query the repo and return a collection of all Models
-    # HINT: render(conn, View, "documemnt.ext", params: params) will render a view
+    cards = Repo.all(Card)
+
     conn
+    |> render(CardView, "index.json", cards: cards)
+
+
   end
 
 
   def show(conn, %{"id" => id}) do
-    # TODO 2: implement the show controller
-    # HINT: Repo.get(Model, id) can be used to get a model by id
-    # HINT: Repo.get(Model, id) returns a Model or nil
-    # HINT: UUID.cast("str") will ensure a string is a uuid and returns
-    # {:ok, uuid} or :error
-    conn
-    |> put_status(:not_found)
-    |> render(Retro.ErrorView, "404.json", %{type: "Card"})
+    case UUID.cast(id) do
+      {:ok, uuid} ->
+        case Repo.get(Card, id) do
+          nil ->
+            conn
+            |> put_status(:not_found)
+            |> render(Retro.ErrorView, "404.json", %{type: "Card"})
+          card ->
+            conn
+            |> render(CardView, "show.json", card: card)
+          end
+      :error ->
+        conn
+        |> put_status(:bad_request)
+        |> render(Retro.ErrorView, "400.json", %{description: "Invalid request.", fields: ["id"]})
+      end
   end
 
 
