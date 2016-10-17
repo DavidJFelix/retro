@@ -1,17 +1,14 @@
 defmodule Retro.CardController do
   use Retro.Web, :controller
 
-  alias Retro.Card
+  alias Retro.{Card, CardView, ErrorView}
   alias Ecto.UUID
-  alias Retro.CardView
 
   def index(conn, _params) do
     cards = Repo.all(Card)
 
     conn
     |> render(CardView, "index.json", cards: cards)
-
-
   end
 
 
@@ -22,7 +19,7 @@ defmodule Retro.CardController do
           nil ->
             conn
             |> put_status(:not_found)
-            |> render(Retro.ErrorView, "404.json", %{type: "Card"})
+            |> render(ErrorView, "404.json", %{type: "Card"})
           card ->
             conn
             |> render(CardView, "show.json", card: card)
@@ -30,7 +27,7 @@ defmodule Retro.CardController do
       :error ->
         conn
         |> put_status(:bad_request)
-        |> render(Retro.ErrorView, "400.json", %{description: "Invalid request.", fields: ["id"]})
+        |> render(ErrorView, "400.json", %{description: "Invalid request.", fields: ["id"]})
       end
   end
 
