@@ -15,7 +15,7 @@ defmodule Retro.CardController do
   def show(conn, %{"id" => id}) do
     case UUID.cast(id) do
       {:ok, uuid} ->
-        case Repo.get(Card, id) do
+        case Repo.get(Card, uuid) do
           nil ->
             conn
             |> put_status(:not_found)
