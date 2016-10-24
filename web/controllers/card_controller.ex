@@ -33,19 +33,14 @@ defmodule Retro.CardController do
 
 
   def create(conn, card_params) do
-    # TODO 3: implement the create controller
-    # HINT: Repo.insert(Changeset) will create a db resource
-    # HINT: Repo.insert only inserts valid changesets, returning {:ok, Model} or {:error, Changeset}
-    # HINT: put_resp_header(conn, "location", url) is how you set a location header
-    # HINT: card_path can be used to get the URL
-    # HINT: an HTTP 422 is an "unprocessable_entity" error
     changeset = Card.changeset(%Card{}, card_params)
+
     case Repo.insert(changeset) do
       {:ok, card} ->
         conn
         |> put_status(:created)
         |> put_resp_header("location", card_path(conn, :show, card.id))
-        |> render(CardView, "location.json", location: card_path(conn, :show, card.id))
+        |> render(CardView, "show.json", card: card)
 
       {:error, _changeset} ->
         conn

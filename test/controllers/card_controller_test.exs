@@ -98,7 +98,6 @@ defmodule Retro.CardControllerTest do
   end
 
 
-  # TODO 3: Do what the test todos say
   ### Create controller tests
   describe "create/2" do
     test "returns the card with id when card is valid", %{conn: conn} do
@@ -107,7 +106,9 @@ defmodule Retro.CardControllerTest do
       response = conn
                  |> post(card_path(conn, :create), card)
                  |> json_response(201)
-      expected = %{"code" => 201, "location" => card_path(conn, :show, Repo.get_by!(Card, title: "new card").id)}
+      expected = Card
+                 |> Repo.get_by!(title: "new card")
+                 |> stringify_keys
 
       assert response == expected
     end
@@ -119,6 +120,7 @@ defmodule Retro.CardControllerTest do
                  |> post(card_path(conn, :create), card)
                  |> get_resp_header("location")
 
+      # Response header is a key: array(values) mapping
       expected = [card_path(conn, :show, Repo.get_by!(Card, title: "new card").id)]
 
       assert response == expected
