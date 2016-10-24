@@ -102,12 +102,26 @@ defmodule Retro.CardControllerTest do
   ### Create controller tests
   describe "create/2" do
     test "returns the card with id when card is valid", %{conn: conn} do
-      # TODO: uncomment this test and pass it
+      card = %{"title" => "new card"}
 
+      response = conn
+                 |> post(card_path(conn, :create), card)
+                 |> json_response(201)
+      expected = %{"code" => 201, "location" => card_path(conn, :show, Repo.get_by!(Card, title: "new card").id)}
+
+      assert response == expected
     end
 
     test "returns location header when card is valid", %{conn: conn} do
-      # TODO: uncomment this test and pass it
+      card = %{"title" => "new card"}
+
+      response = conn
+                 |> post(card_path(conn, :create), card)
+                 |> get_resp_header("location")
+
+      expected = [card_path(conn, :show, Repo.get_by!(Card, title: "new card").id)]
+
+      assert response == expected
     end
 
     test "returns a server message with 422 error when card is invalid", %{conn: conn} do

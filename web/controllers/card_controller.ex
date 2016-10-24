@@ -39,7 +39,20 @@ defmodule Retro.CardController do
     # HINT: put_resp_header(conn, "location", url) is how you set a location header
     # HINT: card_path can be used to get the URL
     # HINT: an HTTP 422 is an "unprocessable_entity" error
-    conn
+    changeset = Card.changeset(%Card{}, card_params)
+    case Repo.insert(changeset) do
+      {:ok, card} ->
+        conn
+        |> put_status(:created)
+        |> put_resp_header("location", card_path(conn, :show, card.id))
+        |> render(CardView, "location.json", location: card_path(conn, :show, card.id))
+
+      {:error, _changeset} ->
+        conn
+        |> render(ErrorView, "400.json", %{description: "Invalid request.", fields: ["id"]})
+    end
+
+
   end
 
 

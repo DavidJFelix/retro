@@ -9,6 +9,13 @@ defmodule Retro.CardView do
     }
   end
 
+  def render("location.json", %{location: location}) do
+    %{
+      code: 201,
+      location: location
+    }
+  end
+
   def render("index.json", %{cards: cards}) do
     render_many(cards, Retro.CardView, "card.json")
   end
