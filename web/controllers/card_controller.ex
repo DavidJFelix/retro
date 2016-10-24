@@ -1,14 +1,15 @@
 defmodule Retro.CardController do
   use Retro.Web, :controller
 
-  alias Retro.{Card, CardView, ErrorView}
+  alias Retro.{Card, ErrorView}
   alias Ecto.UUID
+
 
   def index(conn, _params) do
     cards = Repo.all(Card)
 
     conn
-    |> render(CardView, "index.json", cards: cards)
+    |> render("index.json", cards: cards)
   end
 
 
@@ -22,7 +23,7 @@ defmodule Retro.CardController do
             |> render(ErrorView, "404.json", %{type: "Card"})
           card ->
             conn
-            |> render(CardView, "show.json", card: card)
+            |> render("show.json", card: card)
           end
       :error ->
         conn
@@ -40,7 +41,7 @@ defmodule Retro.CardController do
         conn
         |> put_status(:created)
         |> put_resp_header("location", card_path(conn, :show, card.id))
-        |> render(CardView, "show.json", card: card)
+        |> render("show.json", card: card)
 
       {:error, _changeset} ->
         conn
