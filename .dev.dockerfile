@@ -13,7 +13,7 @@ RUN apt-get -yq update && \
 # Get deps
 COPY mix.exs /opt/
 
-RUN mix local.hex --force
+RUN  mix local.hex --force && mix hex.info
 
 ONBUILD RUN yes | mix deps.get \
 	&& mix local.rebar \
