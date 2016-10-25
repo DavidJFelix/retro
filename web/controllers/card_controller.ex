@@ -44,26 +44,58 @@ defmodule Retro.CardController do
         |> render("show.json", card: card)
 
       {:error, _changeset} ->
+        # FIXME: this should be a 422
         conn
         |> render(ErrorView, "400.json", %{description: "Invalid request.", fields: ["id"]})
     end
-
-
   end
 
 
   def update(conn, card_params) do
-    # TODO 4: implement the update controller
-    # HINT: pretty much just combine show and create
-    # HINT: Repo.update works a lot like Repo.insert
-    # HINT: changeset takes the Model as the first argument. Repo.get gives a model.
-    # HINT: in order to pass the 404 test, we cannot Upsert, we must get then update
+    case UUID.cast(card_params["id"]) do
+      {:ok, uuid} ->
+        case Repo.get(Card, uuid) do
+          nil ->
+            conn
+            |> put_status(:not_found)
+            |> render(ErrorView, "404.json", %{type: "Card"})
+          card ->
+            changeset = Card.changeset(card, card_params)
+            case Repo.update(changeset) do
+              {:ok, new_card} ->
+                conn
+                |> put_status(:success)
+                |> render("show.json", card: new_card)
+              {:error, _changeset} ->
+                # FIXME: this should be a 422
+                conn
+                |> render(ErrorView, "400.json", %{description: "Invalid request.", fields: ["id"]})
+            end
+        end
+      :error ->
+        conn
+        |> put_status(:bad_request)
+        |> render(ErrorView, "400.json", %{description: "Invalid request.", fields: ["id"]})
+    end
   end
 
 
   def delete(conn, %{"id" => id}) do
-    # TODO 5: implement the delete controller
-    # HINT: like update, if we want to pass the 404 test we cannot blindly delete, we must get first
-    # HINT: Repo.delete(Model). You know what to do.
+    case UUID.cast(id) do
+      {:ok, uuid} ->
+        # FIXME: utilize the not found catch and do get and delete in one step
+        case Repo.get(Card, uuid) do
+          nil ->
+            conn
+            |> put_status(:not_found)
+            |> render(ErrorView, "404.json", %{type: "Card"})
+          card ->
+            Repo.delete!(Card, card)
+        end
+      :error ->
+        conn
+        |> put_status(:bad_request)
+        |> render(ErrorView, "400.json", %{description: "Invalid request.", fields: ["id"]})
+    end
   end
 end
