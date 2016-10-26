@@ -28,6 +28,7 @@ defmodule Retro.CardControllerTest do
       expected = cards
                  |> Enum.map(&Repo.insert!(&1))
                  |> Enum.map(&stringify_keys/1)
+                 |> Enum.map(&map.take(&1, ["title", "id"]))
 
       response = conn
                  |> get(card_path(conn, :index))
@@ -46,6 +47,7 @@ defmodule Retro.CardControllerTest do
       expected = card
                  |> Repo.insert!
                  |> stringify_keys
+                 |> Map.take(["title", "id"])
 
       response = conn
                  |> get(card_path(conn, :index))
@@ -72,6 +74,7 @@ defmodule Retro.CardControllerTest do
                  |> Map.merge(@card1)
                  |> Repo.insert!
                  |> stringify_keys
+                 |> Map.take(["title", "id"])
 
       response = conn
                  |> get(card_path(conn, :show, expected["id"]))
@@ -108,6 +111,7 @@ defmodule Retro.CardControllerTest do
       response = conn
                  |> post(card_path(conn, :create), @card1)
                  |> json_response(201)
+
       expected = Card
                  |> Repo.get_by!(@card1)
                  |> stringify_keys
@@ -127,7 +131,7 @@ defmodule Retro.CardControllerTest do
     end
 
     test "returns a server message with 422 error when card is invalid", %{conn: conn} do
-      expected = %{"code" => 422, "description" => "JSON but unprocessable.", "fields" => %{"title" => ["can't be blank"]}}
+      expected = %{"code" => 422, "description" => "JSON was unprocessable.", "fields" => %{"title" => ["can't be blank"]}}
 
       # Post an empty map
       response = conn
@@ -190,7 +194,7 @@ defmodule Retro.CardControllerTest do
                 |> stringify_keys
                 |> Map.merge(%{"title" => 1})
 
-      expected = %{"code" => 422, "description" => "JSON but unprocessable.", "fields" => %{"title" => ["is invalid"]}}
+      expected = %{"code" => 422, "description" => "JSON was unprocessable.", "fields" => %{"title" => ["is invalid"]}}
 
       response = conn
                  |> put(card_path(conn, :update, updated["id"]), updated)
