@@ -124,9 +124,26 @@ defmodule Retro.CardControllerTest do
     end
 
     test "returns a server message with 422 error when card is invalid", %{conn: conn} do
+      expected = %{"code" => 422, "description" => "JSON but unprocessable.", "fields" => %{"title" => ["can't be blank"]}}
+
+      # Post an empty map
+      response = conn
+                 |> post(card_path(conn, :create), %{})
+                 |> json_response(422)
+
+      assert response == expected
     end
 
     test "does not return a location header when card is invalid", %{conn: conn} do
+      # Post an empty map
+      response = conn
+                 |> post(card_path(conn, :create), %{})
+                 |> get_resp_header("location")
+
+      # Response header is a key: array(values) mapping
+      expected = []
+
+      assert response == expected
     end
   end
 

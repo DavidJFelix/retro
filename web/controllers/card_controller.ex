@@ -46,7 +46,8 @@ defmodule Retro.CardController do
       {:error, _changeset} ->
         # FIXME: this should be a 422
         conn
-        |> render(ErrorView, "400.json", %{description: "Invalid request.", fields: ["id"]})
+        |> put_status(:unprocessable_entity)
+        |> render(ErrorView, "422.json", changeset: changeset)
     end
   end
 

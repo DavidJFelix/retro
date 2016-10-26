@@ -1,6 +1,10 @@
 defmodule Retro.ErrorView do
   use Retro.Web, :view
 
+  def translate_errors(changeset) do
+    Ecto.Changeset.traverse_errors(changeset, &translate_error/1)
+  end
+
   def render("404.html", _assigns) do
     "Page not found"
   end
@@ -21,11 +25,11 @@ defmodule Retro.ErrorView do
     })
   end
 
-  def render("422.json", %{type: type, fields: fields}) do
+  def render("422.json", %{changeset: changeset}) do
     render(Retro.ErrorView, "error.json", %{
       code: 422,
-      description: type <> " was understood as JSON but unprocessable.",
-      fields: fields
+      description: "JSON but unprocessable.",
+      fields: translate_errors(changeset)
     })
   end
 
