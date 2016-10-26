@@ -44,7 +44,6 @@ defmodule Retro.CardController do
         |> render("show.json", card: card)
 
       {:error, _changeset} ->
-        # FIXME: this should be a 422
         conn
         |> put_status(:unprocessable_entity)
         |> render(ErrorView, "422.json", changeset: changeset)
@@ -65,12 +64,12 @@ defmodule Retro.CardController do
             case Repo.update(changeset) do
               {:ok, new_card} ->
                 conn
-                |> put_status(:success)
                 |> render("show.json", card: new_card)
               {:error, _changeset} ->
                 # FIXME: this should be a 422
                 conn
-                |> render(ErrorView, "400.json", %{description: "Invalid request.", fields: ["id"]})
+                |> put_status(:unprocessable_entity)
+                |> render(ErrorView, "422.json", changeset: changeset)
             end
         end
       :error ->
@@ -84,14 +83,14 @@ defmodule Retro.CardController do
   def delete(conn, %{"id" => id}) do
     case UUID.cast(id) do
       {:ok, uuid} ->
-        # FIXME: utilize the not found catch and do get and delete in one step
         case Repo.get(Card, uuid) do
           nil ->
             conn
             |> put_status(:not_found)
             |> render(ErrorView, "404.json", %{type: "Card"})
           card ->
-            Repo.delete!(Card, card)
+            Repo.delete!(card)
+            send_resp(conn, :no_content, "")
         end
       :error ->
         conn

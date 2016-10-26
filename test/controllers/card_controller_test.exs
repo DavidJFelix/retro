@@ -148,22 +148,70 @@ defmodule Retro.CardControllerTest do
   end
 
 
-  # TODO 4:
   ### Update controller tests
   describe "update/2" do
     test "returns updated card when valid complete card is provided", %{conn: conn} do
+      expected = %Card{}
+                 |> Map.merge(@card1)
+                 |> Repo.insert!
+                 |> stringify_keys
+                 |> Map.merge(%{"title" => "Test Card 2"})
+
+      response = conn
+                 |> put(card_path(conn, :update, expected["id"]), expected)
+                 |> json_response(200)
+
+      assert response == expected
     end
 
     test "returns updated card when valid partial card is provided", %{conn: conn} do
+      expected = %Card{}
+                 |> Map.merge(@card1)
+                 |> Repo.insert!
+                 |> stringify_keys
+                 |> Map.merge(%{"title" => "Test Card 2"})
+
+      patched = expected |> Map.take(["title"])
+
+      response = conn
+                 |> patch(card_path(conn, :update, expected["id"]), patched)
+                 |> json_response(200)
+
+      assert response == expected
     end
 
     test "returns a server message with 422 when invalid card is provided", %{conn: conn} do
+      updated = %Card{}
+                |> Map.merge(@card1)
+                |> Repo.insert!
+                |> stringify_keys
+                |> Map.merge(%{"title" => 1})
+
+      expected = %{"code" => 422, "description" => "JSON but unprocessable.", "fields" => %{"title" => ["is invalid"]}}
+
+      response = conn
+                 |> put(card_path(conn, :update, updated["id"]), updated)
+                 |> json_response(422)
+
+      assert response == expected
     end
 
     test "returns server message with 404 when card is not found", %{conn: conn} do
+      expected = %{"code" => 404, "description" => "Card not found.", "fields" => ["id"]}
+      response = conn
+                 |> put(card_path(conn, :update, Ecto.UUID.generate()), @card1)
+                 |> json_response(404)
+
+      assert response == expected
     end
 
     test "returns a server message with 400 when a non-uuid id is provided", %{conn: conn} do
+      expected = %{"code" => 400, "description" => "Invalid request.", "fields" => ["id"]}
+      response = conn
+                 |> put(card_path(conn, :update, "Fake ID"), @card1)
+                 |> json_response(400)
+
+      assert response == expected
     end
   end
 
@@ -172,12 +220,35 @@ defmodule Retro.CardControllerTest do
   ### Delete controller tests
   describe "delete/2" do
     test "returns no content when card did exist", %{conn: conn} do
+      card = %Card{}
+             |> Map.merge(@card1)
+             |> Repo.insert!
+
+      expected = ""
+      response = conn
+                 |> delete(card_path(conn, :delete, card.id))
+                 |> response(204)
+
+      assert response == expected
     end
 
-    test "delete should return a server message with 404 error when card does not exist", %{conn: conn} do
+    test "returns a server message with 404 error when card does not exist", %{conn: conn} do
+      expected = %{"code" => 404, "description" => "Card not found.", "fields" => ["id"]}
+
+      response = conn
+                 |> delete(card_path(conn, :delete, Ecto.UUID.generate()))
+                 |> json_response(404)
+
+      assert response == expected
     end
 
-    test "delete should return a server message with 400 error when a non-uuid id is provided", %{conn: conn} do
+    test "returns a server message with 400 error when a non-uuid id is provided", %{conn: conn} do
+      expected = %{"code" => 400, "description" => "Invalid request.", "fields" => ["id"]}
+      response = conn
+                 |> put(card_path(conn, :delete, "Fake ID"))
+                 |> json_response(400)
+
+      assert response == expected
     end
   end
 end
