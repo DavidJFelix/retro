@@ -11,6 +11,10 @@ defmodule Retro.CardControllerTest do
     title: "Test Card 2"
   }
 
+  setup %{conn: conn} do
+    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+  end
+
 
   ### Index controller tests
   describe "index/2" do

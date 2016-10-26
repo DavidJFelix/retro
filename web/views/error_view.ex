@@ -28,7 +28,7 @@ defmodule Retro.ErrorView do
   def render("422.json", %{changeset: changeset}) do
     render(Retro.ErrorView, "error.json", %{
       code: 422,
-      description: "JSON but unprocessable.",
+      description: "JSON was unprocessable.",
       fields: translate_errors(changeset)
     })
   end
