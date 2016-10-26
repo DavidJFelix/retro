@@ -43,7 +43,7 @@ defmodule Retro.CardController do
         |> put_resp_header("location", card_path(conn, :show, card.id))
         |> render("show.json", card: card)
 
-      {:error, _changeset} ->
+      {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
         |> render(ErrorView, "422.json", changeset: changeset)
@@ -65,7 +65,7 @@ defmodule Retro.CardController do
               {:ok, new_card} ->
                 conn
                 |> render("show.json", card: new_card)
-              {:error, _changeset} ->
+              {:error, changeset} ->
                 # FIXME: this should be a 422
                 conn
                 |> put_status(:unprocessable_entity)
