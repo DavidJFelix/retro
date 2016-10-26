@@ -12,7 +12,6 @@ defmodule Retro.CardControllerTest do
   }
 
 
-  # TODO 1: Uncomment example tests, pass them then write the todo tests
   ### Index controller tests
   describe "index/2" do
     test "returns an array of cards when there are 2+ cards", %{conn: conn} do
@@ -216,7 +215,6 @@ defmodule Retro.CardControllerTest do
   end
 
 
-  # TODO 5:
   ### Delete controller tests
   describe "delete/2" do
     test "returns no content when card did exist", %{conn: conn} do
