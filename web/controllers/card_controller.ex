@@ -39,6 +39,8 @@ defmodule Retro.CardController do
 
     case Repo.insert(changeset) do
       {:ok, card} ->
+        #TODO: broadcast something
+        Retro.Endpoint.broadcast("board:lobby", "new_card", card)
         conn
         |> put_status(:created)
         |> put_resp_header("location", card_path(conn, :show, card.id))
