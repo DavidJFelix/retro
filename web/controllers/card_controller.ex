@@ -39,7 +39,7 @@ defmodule Retro.CardController do
 
     case Repo.insert(changeset) do
       {:ok, card} ->
-        Endpoint.broadcast("board:lobby", "new_card", card)
+        Endpoint.broadcast("board:lobby", "card:updated", card)
         conn
         |> put_status(:created)
         |> put_resp_header("location", card_path(conn, :show, card.id))
@@ -66,7 +66,7 @@ defmodule Retro.CardController do
             changeset = Card.changeset(card, card_params)
             case Repo.update(changeset) do
               {:ok, new_card} ->
-                Endpoint.broadcast("board:lobby", "updated_card", card)
+                Endpoint.broadcast("card:" <> uuid, "card:updated", card)
                 render(conn, "show.json", card: new_card)
 
               {:error, changeset} ->
