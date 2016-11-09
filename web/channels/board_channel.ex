@@ -27,6 +27,11 @@ defmodule Retro.BoardChannel do
     {:noreply, socket}
   end
 
+  def handle_out("updated_card", payload, socket) do
+    push socket, "updated_card", payload
+    {:noreply, socket}
+  end
+
   # Add authorization logic here as required.
   defp authorized?(_payload) do
     true
