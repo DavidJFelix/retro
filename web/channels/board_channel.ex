@@ -9,14 +9,6 @@ defmodule Retro.BoardChannel do
     end
   end
 
-  def join("board:" <> _card_id, payload, socket) do
-    if authorized?(payload) do
-      {:ok, socket}
-    else
-      {:error, %{reason: "unauthorized"}}
-    end
-  end
-
 
   def handle_out("card:created", payload, socket) do
     push socket, "card:created", payload

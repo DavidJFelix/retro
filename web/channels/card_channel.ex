@@ -1,7 +1,7 @@
 defmodule Retro.CardChannel do
   use Retro.Web, :channel
 
-  def join("card:lobby", payload, socket) do
+  def join("card:" <> _card_id, payload, socket) do
     if authorized?(payload) do
       {:ok, socket}
     else
